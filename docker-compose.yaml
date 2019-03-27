@@ -1,0 +1,113 @@
+version: "2"
+services:
+  lookafter_01:
+    container_name: lookafter_01
+    image: node:latest
+    stdin_open: true
+    tty: true
+    privileged: false
+    restart: always
+    hostname: lookafter
+    environment:
+        NODE_PORT: 7000
+        NODE_ENV: "production"
+        NODE_COUCHDB_HOST: "http://10.22.0.5:5984"
+        NODE_COUCHDB_USER: "root"
+        NODE_COUCHDB_PASS: "m200k9"
+        NODE_COUCHDB_DBNAME: "look_after"
+    volumes: 
+        - /home/lookafter:/home
+    networks:
+      lookafter_network:
+        ipv4_address: 10.22.0.10
+    depends_on:
+        - couchdb
+  lookafter_02:
+    container_name: lookafter_02
+    image: node:latest
+    stdin_open: true
+    tty: true
+    privileged: false
+    restart: always
+    hostname: lookafter
+    environment:
+        NODE_PORT: 7000
+        NODE_ENV: "production"
+        NODE_COUCHDB_HOST: "http://10.22.0.5:5984"
+        NODE_COUCHDB_USER: "root"
+        NODE_COUCHDB_PASS: "m200k9"
+        NODE_COUCHDB_DBNAME: "look_after"
+    volumes: 
+        - /home/lookafter:/home
+    networks:
+      lookafter_network:
+        ipv4_address: 10.22.0.11
+    depends_on:
+        - couchdb
+  lookafter_03:
+    container_name: lookafter_03
+    image: node:latest
+    stdin_open: true
+    tty: true
+    privileged: false
+    restart: always
+    hostname: lookafter
+    environment:
+        NODE_PORT: 7000
+        NODE_ENV: "production"
+        NODE_COUCHDB_HOST: "http://10.22.0.5:5984"
+        NODE_COUCHDB_USER: "root"
+        NODE_COUCHDB_PASS: "m200k9"
+        NODE_COUCHDB_DBNAME: "look_after"
+    volumes: 
+        - /home/lookafter:/home
+    networks:
+      lookafter_network:
+        ipv4_address: 10.22.0.12
+    depends_on:
+        - couchdb
+  lookafter_04:
+    container_name: lookafter_04
+    image: node:latest
+    stdin_open: true
+    tty: true
+    privileged: false
+    restart: always
+    hostname: lookafter
+    environment:
+        NODE_PORT: 7000
+        NODE_ENV: "production"
+        NODE_COUCHDB_HOST: "http://10.22.0.5:5984"
+        NODE_COUCHDB_USER: "root"
+        NODE_COUCHDB_PASS: "m200k9"
+        NODE_COUCHDB_DBNAME: "look_after"
+    volumes: 
+        - /home/lookafter:/home
+    networks:
+      lookafter_network:
+        ipv4_address: 10.22.0.13
+    depends_on:
+        - couchdb
+  couchdb:
+    container_name: couchdb
+    image: couchdb:latest
+    stdin_open: true
+    tty: true
+    privileged: false
+    restart: always
+    hostname: couchdb.lookafter.io
+    environment:
+        COUCHDB_USER: 'root'
+        COUCHDB_PASSWORD: "m200k9"
+    networks:
+      lookafter_network:
+        ipv4_address: 10.22.0.5
+networks:
+  lookafter_network:
+    external:
+      name: lookafter_network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.22.0.0/24
