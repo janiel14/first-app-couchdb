@@ -1,6 +1,7 @@
 module.exports = function(app) {
     const _self = {};
     const Diapers = app.models.diapers;
+    const Sizes = app.models.sizes;
     
     /**
     * createOrUpdate
@@ -9,19 +10,34 @@ module.exports = function(app) {
     * @route /api/diapers
     * @method POST
     */
-    _self.createOrUpdate = async (req, res) {
+    _self.createOrUpdate = async (req, res) => {
         try {
-            req.check('model', 'Not found model').notEmpty();
-            req.check('description', 'Not found description').notEmpty();
-            req.check('sizes', 'Not sizes description').notEmpty();
-            const errors = req.asyncValidationErrors();
-            if (erros) {
+            req.checkBody('model', 'Not found model').notEmpty();
+            req.checkBody('description', 'Not found description').notEmpty();
+            req.checkBody('sizes', 'Not found sizes ').notEmpty();
+            const errors = await req.asyncValidationErrors();
+            if (errors) {
                 res.status(500).json({
                     message: 'Params not found!',
                     data: errors
                 });
             } else {
-                const ds = await app.couchdb.couchdb.create('diapers', req.body);
+                Diapers.model = req.body.model;
+                Diapers.description = req.body.description;
+                Diapers.sizes = [];
+                const listSiezes = JSON.parse(req.body.sizes);
+                if (listSiezes.length > 0) {
+                    listSiezes.forEach(element => {
+                        Sizes.description = element.description;
+                        Sizes.stock = element.stock
+                        Diapers.sizes.push(Sizes);
+                    });
+                }
+                const exists = await app.couchdb.find(Diapers.model);
+                if (exists) {
+                    await app.couchdb.destroy(Diapers.model, exists._rev);
+                }
+                const ds = await app.couchdb.createOrUpdate(Diapers, Diapers.model);
                 if (ds) {
                     res.status(200).json({
                         message: 'Diapers save or updated success',
@@ -48,20 +64,20 @@ module.exports = function(app) {
     * delete
     * @param {Object} req
     * @param {Object} res
-    * @route /api/diapers/:model
+    * @route /api/diapers/:model/:rev
     * @method DELETE
     */
-    _self.delete = async (req, res) {
+    _self.delete = async (req, res) => {
         try {
-            req.check('model', 'Not found model').notEmpty();
-            const errors = req.asyncValidationErrors();
-            if (erros) {
+            req.checkParams('model', 'Not found model').notEmpty();
+            const errors = await req.asyncValidationErrors();
+            if (errors) {
                 res.status(500).json({
                     message: 'Params not found!',
                     data: errors
                 });
             } else {
-                const ds = await app.couchdb.couchdb.destroy(req.params.model);
+                const ds = await app.couchdb.destroy(req.params.model, req.params.rev);
                 if (ds) {
                     res.status(200).json({
                         message: 'Diapers deleted success',
@@ -91,17 +107,17 @@ module.exports = function(app) {
     * @route /api/diapers/:model
     * @method GET
     */
-    _self.getDiaper = async (req, res) {
+    _self.getDiaper = async (req, res) => {
         try {
-            req.check('model', 'Not found model').notEmpty();
-            const errors = req.asyncValidationErrors();
-            if (erros) {
+            req.checkParams('model', 'Not found model').notEmpty();
+            const errors = await req.asyncValidationErrors();
+            if (errors) {
                 res.status(500).json({
                     message: 'Params not found!',
                     data: errors
                 });
             } else {
-                const ds = await app.couchdb.couchdb.find(req.params.model);
+                const ds = await app.couchdb.find(req.params.model);
                 if (ds) {
                     res.status(200).json({
                         message: 'Diapers get success',
@@ -131,9 +147,9 @@ module.exports = function(app) {
     * @route /api/diapers
     * @method GET
     */
-    _self.getAllDiapers = async (req, res) {
+    _self.getAllDiapers = async (req, res) => {
         try {
-            const ds = await app.couchdb.couchdb.findAll();
+            const ds = await app.couchdb.findAll();
             if (ds) {
                 res.status(200).json({
                     message: 'Diapers get success',
