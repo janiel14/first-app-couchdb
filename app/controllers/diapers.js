@@ -1,5 +1,6 @@
 module.exports = function(app) {
     const _self = {};
+    const _colletion = "diapers";
     const Diapers = app.models.diapers;
     const Sizes = app.models.sizes;
     
@@ -33,11 +34,11 @@ module.exports = function(app) {
                         Diapers.sizes.push(Sizes);
                     });
                 }
-                const exists = await app.couchdb.find(Diapers.model);
+                const exists = await app.couchdb.find(Diapers.model, _colletion);
                 if (exists) {
-                    await app.couchdb.destroy(Diapers.model, exists._rev);
+                    await app.couchdb.destroy(Diapers.model, exists._rev, _colletion);
                 }
-                const ds = await app.couchdb.createOrUpdate(Diapers, Diapers.model);
+                const ds = await app.couchdb.createOrUpdate(Diapers, Diapers.model, _colletion);
                 if (ds) {
                     res.status(200).json({
                         message: 'Diapers save or updated success',
@@ -77,7 +78,7 @@ module.exports = function(app) {
                     data: errors
                 });
             } else {
-                const ds = await app.couchdb.destroy(req.params.model, req.params.rev);
+                const ds = await app.couchdb.destroy(req.params.model, req.params.rev, _colletion);
                 if (ds) {
                     res.status(200).json({
                         message: 'Diapers deleted success',
@@ -117,7 +118,7 @@ module.exports = function(app) {
                     data: errors
                 });
             } else {
-                const ds = await app.couchdb.find(req.params.model);
+                const ds = await app.couchdb.find(req.params.model, _colletion);
                 if (ds) {
                     res.status(200).json({
                         message: 'Diapers get success',
@@ -126,7 +127,7 @@ module.exports = function(app) {
                 } else {
                     res.status(500).json({
                        message: 'Internal server error',
-                       data: error
+                       data: ds
                     });
                 }
             }
@@ -149,8 +150,11 @@ module.exports = function(app) {
     */
     _self.getAllDiapers = async (req, res) => {
         try {
-            const ds = await app.couchdb.findAll();
+            const ds = await app.couchdb.findAll(_colletion);
             if (ds) {
+                await Promise.all(ds.rows.map(async (item) => {
+                    item.colletion = await app.couchdb.find(item.id, _colletion);
+                }));
                 res.status(200).json({
                     message: 'Diapers get success',
                     data: ds
