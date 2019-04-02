@@ -1,33 +1,31 @@
-<div ng-controller="adminController">
-    <div class="jumbotron">
-        <h1 class="text-center">Administration</h1>
+<div class="jumbotron">
+    <h1 class="text-center">Administration</h1>
+</div>
+<a href="#!/market" class="btn btn-primary">Back to Market</a>
+<a href="#!/newproduct" class="btn btn-success">New Product</a>
+<p>Products listen: {{diapers.length}}</p>
+<div class="table-responsive">
+    <div class="form-group">
+        <input class="form-control" ng-model="filterField" type="search" placeholder="Search..." />
     </div>
-    <a href="#!/market" class="btn btn-primary">Back to Market</a>
-    <a href="#!/newproduct" class="btn btn-success">New Product</a>
-    <p>Products listen: {{diapers.length}}</p>
-    <div class="table-responsive">
-        <div class="form-group">
-            <input class="form-control" ng-model="filterField" type="search" placeholder="Search..." />
-        </div>
-        <table class="table table-hover">
-            <thead>
-                <tr class="text-center">
-                    <th>Action</th>
-                    <th>Model</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="diaper in diapers | filter: filterField">
-                    <td class="text-center">
-                        <button class="btn btn-secondary btn-sm">Edit</button>
-                        &nbsp;
-                        <button class="btn btn-danger btn-sm">Remove</button>
-                    </td>
-                    <td>{{diaper.model}}</td>
-                    <td>{{diaper.description}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr class="text-center">
+                <th>Action</th>
+                <th>Model</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="diaper in diapers | filter: filterField">
+                <td class="text-center">
+                    <button class="btn btn-secondary btn-sm">Edit</button>
+                    &nbsp;
+                    <button class="btn btn-danger btn-sm">Remove</button>
+                </td>
+                <td>{{diaper.model}}</td>
+                <td>{{diaper.description}}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>

@@ -1,4 +1,4 @@
-angular.module('first-app-couchdb', ['ngRoute']).config(function($routeProvider) {
+angular.module('first-app-couchdb', ['ngRoute','ngResource']).config(function($routeProvider) {
 
     //routes
     $routeProvider.when('/market', {

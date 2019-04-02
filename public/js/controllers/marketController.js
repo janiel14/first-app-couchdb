@@ -1,39 +1,50 @@
-angular.module('first-app-couchdb').controller('marketController', function($scope) {
+angular.module('first-app-couchdb').controller('marketController', function($scope, Diapers) {
     $scope.diapers = [];
     $scope.filterField = '';
     $scope.sizeSelected = null;
+    $scope.showAlertError =  {
+        show: false,
+        message: null
+    };
+    $scope.showLoading = false;
 
-    //sample
-    $scope.diapers = [
-        {
-            model: 'Model A',
-            description: 'Description model A',
-            sizes: [
-                {
-                    description: 'Size model A',
-                    stock: 10
-                }
-            ]
-        },
-        {
-            model: 'Model B',
-            description: 'Description model B',
-            sizes: [
-                {
-                    description: 'Size model B',
-                    stock: 5
-                }
-            ]
-        },
-        {
-            model: 'Model C',
-            description: 'Description model C',
-            sizes: [
-                {
-                    description: 'Size model C',
-                    stock: 0
-                }
-            ]
-        }
-    ];
+    /**
+     * getAllDiapers
+     */
+    function getAllDiapers() {
+        $scope.showLoading = true;
+        var ds = Diapers.getAll();
+        ds.get(function(response) {
+            $scope.showLoading = false;
+            console.log(response);
+        }, function(error) {
+            $scope.showLoading = false;
+            console.error('getAllDiapers: ', error);
+            showError('Failed on load items from the server...!');
+        });
+    }
+
+    /**
+     * showError
+     * @param {String} message 
+     */
+    function showError(message) {
+        $scope.showAlertError.message = message;
+        $scope.showAlertError.show = true;
+        setTimeout(() => {
+            $scope.showAlertError =  {
+                show: false,
+                message: null
+            };
+        }, 3000);
+    }
+
+    /**
+     * init
+     */
+    $scope.init = function() {
+        getAllDiapers();
+    }
+
+    $scope.init();
 });
