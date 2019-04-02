@@ -1,0 +1,29 @@
+{
+  "name": "first-app-couchdb",
+  "description": "project test",
+  "main": "server.js",
+  "authors": [
+    "Janiel Oliveira"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "nodejs",
+    "javascript",
+    "couchDB"
+  ],
+  "homepage": "https://github.com/janiel14/first-app-couchdb",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.6",
+    "angular-route": "1.6",
+    "bootstrap": "^4.3.1",
+    "angular-resource": "1.6"
+  }
+}

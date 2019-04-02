@@ -1,0 +1,26 @@
+<div ng-controller="marketController">
+    <div class="jumbotron">
+        <h1 class="text-center">Market</h1>
+    </div>
+    <a href="#!/admin" class="btn btn-primary">Administration</a>
+    <p>Products listen: {{diapers.length}}</p>
+    <div class="form-group">
+        <input class="form-control" ng-model="filterField" type="search" placeholder="Search..." />
+    </div>
+    <div ng-repeat="diaper in diapers | filter: filterField">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{diaper.model}}</h5>
+                        <p class="card-text">{{diaper.description}}</p>
+                        <label>Size:</label>
+                        <select ng-options="size as size.description for size in diaper.sizes track by size.description" ng-model="sizeSelected">
+                        </select>
+                        <button class="btn btn-success btn-sm">Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
