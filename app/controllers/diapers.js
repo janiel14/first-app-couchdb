@@ -125,9 +125,9 @@ module.exports = function(app) {
                         data: ds
                     });
                 } else {
-                    res.status(500).json({
-                       message: 'Internal server error',
-                       data: ds
+                    res.status(200).json({
+                       message: 'Diapers not found',
+                       data: null
                     });
                 }
             }
@@ -152,9 +152,11 @@ module.exports = function(app) {
         try {
             const ds = await app.couchdb.findAll(_colletion);
             if (ds) {
-                await Promise.all(ds.rows.map(async (item) => {
-                    item.colletion = await app.couchdb.find(item.id, _colletion);
-                }));
+                if (ds.rows.length > 0) {
+                    await Promise.all(ds.rows.map(async (item) => {
+                        item.colletion = await app.couchdb.find(item.id, _colletion);
+                    }));
+                }
                 res.status(200).json({
                     message: 'Diapers get success',
                     data: ds

@@ -9,5 +9,9 @@ angular.module('first-app-couchdb', ['ngRoute','ngResource']).config(function($r
         templateUrl: 'views/administration.html',
         controller: 'adminController'
     });
+    $routeProvider.when('/admin/diaper/:model', {
+        templateUrl: 'views/newdiaper.html',
+        controller: 'diaperController'
+    });
     $routeProvider.otherwise({redirectTo: '/market'});
 });

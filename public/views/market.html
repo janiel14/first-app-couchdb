@@ -6,8 +6,11 @@
 <div class="form-group">
     <input class="form-control" ng-model="filterField" type="search" placeholder="Search..." />
 </div>
-<div class="text-center" ng-if="showLoading">
-    <img src="img/load.gif" width="75" height="48" alt="loading" />
+<div ng-if="showLoading" class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+</div>
+<div ng-if="showAlertError.show" class="alert alert-danger" role="alert">
+    {{showAlertError.message}}
 </div>
 <div ng-if="diapers.length > 0" ng-repeat="diaper in diapers | filter: filterField">
     <div class="row">
@@ -24,7 +27,4 @@
             </div>
         </div>
     </div>
-</div>
-<div ng-if="showAlertError.show" class="alert alert-danger" role="alert">
-    {{showAlertError.message}}
 </div>
