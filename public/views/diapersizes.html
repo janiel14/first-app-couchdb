@@ -1,0 +1,46 @@
+<div class="jumbotron">
+    <h1 class="text-center">Administration</h1>
+</div>
+<a ng-href="#!/admin" class="btn btn-secondary">Back to admin</a>
+<a ng-href="#!/admin/diaper/newsize/{{diaper.model}}/0" class="btn btn-success">New size</a>
+<p>Size listen: {{diaper.sizes.length}}</p>
+<div class="table-responsive">
+    <div class="form-group">
+        <input class="form-control" ng-model="filterField" type="search" placeholder="Search..." />
+    </div>
+    <div ng-if="showLoading" class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div ng-if="showAlertError.show" class="alert alert-danger" role="alert">
+        {{showAlertError.message}}
+    </div>
+    <div ng-if="size.description != null" class="alert alert-warning" role="alert">
+        confirm delete size {{size.description}}?
+        <button class="btn btn-secondary" ng-click="closeDelete();">No</button>
+        &nbsp;
+        &nbsp;
+        <button class="btn btn-danger" ng-click="deleteSize();">Yes</button>
+    </div>
+    <table class="table table-hover" ng-if="diaper.sizes.length > 0">
+        <thead>
+            <th class="text-center" colspan="3">{{diaper.model}} sizes registred</th>
+            <tr class="text-center">
+                <th>Action</th>
+                <th>Description</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="size in diaper.sizes | filter: filterField">
+                <td class="text-center">
+                    <a class="btn btn-secondary btn-sm" ng-href="#!/admin/diaper/newsize/{{diaper.model}}/{{size.description}}">Edit</a>
+                    &nbsp;
+                    <button class="btn btn-danger btn-sm" type="button" ng-click="selectSize(size);">Remove</button>
+                </td>
+                <td>{{size.description}}</td>
+                <td class="text-center">{{size.stock}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div colspan="3" class="text-center" ng-if="diaper.sizes.length == 0">Not have sizes to {{diaper.model}}</div>
+</div>

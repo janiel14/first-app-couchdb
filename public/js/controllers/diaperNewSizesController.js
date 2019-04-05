@@ -1,8 +1,12 @@
-angular.module('first-app-couchdb').controller('diaperController', function($scope, $timeout, $location, $routeParams, Diapers) {
+angular.module('first-app-couchdb').controller('diaperNewSizesController', function($scope, $timeout, $location, $routeParams, Diapers) {
     $scope.diaper = {
         model: null,
         description: null,
         sizes: []
+    };
+    $scope.size = {
+        description: null,
+        stock: 0
     };
     $scope.disableModel = false;
     $scope.showAlertError =  {
@@ -40,7 +44,24 @@ angular.module('first-app-couchdb').controller('diaperController', function($sco
                     $scope.showLoading = false;
                     if (response.data) {
                         $scope.diaper = response.data;
-                        $scope.disableModel = true;
+                        $scope.size = $scope.diaper.sizes.find(function(item) {
+                            return $routeParams.description === item.description;
+                        });
+                        if ($scope.size) {
+                            var newList = [];
+                            $scope.diaper.sizes.forEach(function(item) {
+                                if (item.description != $routeParams.description) {
+                                    newList.push(item);
+                                }
+                            });
+                            $scope.diaper.sizes = newList;
+                            $scope.disableModel = true;
+                        } else {
+                            $scope.size = {
+                                description: null,
+                                stock: 0
+                            };   
+                        }
                     } 
                 }, function(error) {
                     $scope.showLoading = false;
@@ -56,24 +77,20 @@ angular.module('first-app-couchdb').controller('diaperController', function($sco
 
     /**
      * checkExists
-     * @param {String} model
+     * @param {String} description
      */
-    $scope.checkExists = function(model) {
+    $scope.checkExists = function(description) {
         try {
-            var ds = Diapers.get();
-            ds.get({model: model},function(response) {
-                if (response.data) {
-                    showError('Model name exists!!! Try other');
-                    $scope.diaper = {
-                        model: null,
-                        description: null,
-                        sizes: []
-                    };
-                } 
-            }, function(error) {
-                console.error('diaperControllers - checkExists: ', error);
-                showError('Fatal error on get diaper...');
+            var finded = $scope.diaper.sizes.find(function(item) {
+                return description === item.description;
             });
+            if (finded) {
+                showError('Size name exists!!! Try other');
+                $scope.size = {
+                    description: null,
+                    stock: 0
+                };
+            }
         } catch (error) {
             showError('Fatal error on check name of model!!!');
         }
@@ -84,28 +101,27 @@ angular.module('first-app-couchdb').controller('diaperController', function($sco
      */
     $scope.formSubmit = function() {
         try {
-            if ($scope.diaper.model == null || $scope.diaper.model == 0) {
-                showError('Inform name of model!');
-            } else if ($scope.diaper.description == null || $scope.diaper.description.length == 0) {
-                showError('Inform description of model!');
+            if ($scope.size.description == null || $scope.size.description.length == 0) {
+                showError('Inform description of size!');
             } else {
                 $scope.showLoading = true;
                 var ds = Diapers.save();
+                $scope.diaper.sizes.push($scope.size);
                 ds.save({
                     model: $scope.diaper.model,
                     description: $scope.diaper.description,
                     sizes: JSON.stringify($scope.diaper.sizes)
                 },function(response) {
                     $scope.showLoading = false;
-                    $location.path("admin");
+                    $location.path("admin/diaper/sizes/" + $scope.diaper.model);
                 }, function(error) {
                     $scope.showLoading = false;
-                    console.error('diaperControllers - formSubmit: ', error);
+                    console.error('diaperNewSizeController - formSubmit: ', error);
                     showError('Fatal error on save diaper...');
                 });
             }
         } catch (error) {
-            console.error('diaperControllers - formSubmit: ', error);
+            console.error('diaperNewSizeController - formSubmit: ', error);
             showError('Fatal error on save diaper!!!');
         }
     }

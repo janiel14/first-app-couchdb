@@ -1,5 +1,10 @@
 angular.module('first-app-couchdb').controller('adminController', function($scope, $timeout, Diapers) {
     $scope.diapers = [];
+    $scope.diaper = {
+        model: null,
+        description: null,
+        sizes: []
+    };
     $scope.filterField = '';
     $scope.showAlertError =  {
         show: false,
@@ -42,6 +47,51 @@ angular.module('first-app-couchdb').controller('adminController', function($scop
                 message: null
             };
         }, 3000);
+    }
+
+    /**
+     * selectDiaper
+     * @param {Object} diaper
+     */
+    $scope.selectDiaper = function(diaper) {
+        $scope.diaper = diaper;
+    }
+
+    /**
+     * closeDelete
+     */
+    $scope.closeDelete = function() {
+        $scope.diaper = {
+            model: null,
+            description: null,
+            sizes: []
+        };
+    }
+
+    /**
+     * deleteModel
+     */
+    $scope.deleteModel = function() {
+        try {
+            var ds = Diapers.delete();
+            $scope.showLoading = true;
+            ds.delete({
+                model: $scope.diaper.model,
+                rev: $scope.diaper._rev
+            }, function(response) {
+                $scope.showLoading = false;
+                $scope.closeDelete();
+                $scope.init();
+            }, function(error) {
+                $scope.showLoading = false;
+                console.error('adminController - deleteModel: ', error);
+                showError('Fatal error on delete model!!!');
+            });
+        } catch (error) {
+            $scope.showLoading = false;
+            console.error('adminController - deleteModel: ', error);
+            showError('Fatal error on delete model!!!');
+        }
     }
 
     /**

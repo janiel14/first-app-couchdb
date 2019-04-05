@@ -13,5 +13,13 @@ angular.module('first-app-couchdb', ['ngRoute','ngResource']).config(function($r
         templateUrl: 'views/newdiaper.html',
         controller: 'diaperController'
     });
+    $routeProvider.when('/admin/diaper/sizes/:model', {
+        templateUrl: 'views/diapersizes.html',
+        controller: 'diaperSizesController'
+    });
+    $routeProvider.when('/admin/diaper/newsize/:model/:description', {
+        templateUrl: 'views/diapersizesnew.html',
+        controller: 'diaperNewSizesController'
+    });
     $routeProvider.otherwise({redirectTo: '/market'});
 });

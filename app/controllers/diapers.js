@@ -29,9 +29,7 @@ module.exports = function(app) {
                 const listSiezes = JSON.parse(req.body.sizes);
                 if (listSiezes.length > 0) {
                     listSiezes.forEach(element => {
-                        Sizes.description = element.description;
-                        Sizes.stock = element.stock
-                        Diapers.sizes.push(Sizes);
+                        Diapers.sizes.push(element);
                     });
                 }
                 const exists = await app.couchdb.find(Diapers.model, _colletion);

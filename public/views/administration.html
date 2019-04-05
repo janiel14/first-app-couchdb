@@ -2,7 +2,7 @@
     <h1 class="text-center">Administration</h1>
 </div>
 <a href="#!/market" class="btn btn-secondary">Back to Market</a>
-<a href="#!/admin/diaper/0" class="btn btn-success">New Product</a>
+<a href="#!/admin/diaper/0" class="btn btn-success">New diaper</a>
 <p>Products listen: {{diapers.length}}</p>
 <div class="table-responsive">
     <div class="form-group">
@@ -14,8 +14,16 @@
     <div ng-if="showAlertError.show" class="alert alert-danger" role="alert">
         {{showAlertError.message}}
     </div>
+    <div ng-if="diaper.model != null" class="alert alert-warning" role="alert">
+        confirm delete diaper model {{diaper.model}}?
+        <button class="btn btn-secondary" ng-click="closeDelete();">No</button>
+        &nbsp;
+        &nbsp;
+        <button class="btn btn-danger" ng-click="deleteModel();">Yes</button>
+    </div>
     <table class="table table-hover" ng-if="diapers.length > 0">
         <thead>
+            <th class="text-center" colspan="3">Diapers registred</th>
             <tr class="text-center">
                 <th>Action</th>
                 <th>Model</th>
@@ -25,9 +33,11 @@
         <tbody>
             <tr ng-repeat="diaper in diapers | filter: filterField">
                 <td class="text-center">
+                    <a class="btn btn-success btn-sm" ng-href="#!/admin/diaper/sizes/{{diaper.model}}">Sizes</a>
+                        &nbsp;
                     <a class="btn btn-secondary btn-sm" ng-href="#!/admin/diaper/{{diaper.model}}">Edit</a>
                     &nbsp;
-                    <a class="btn btn-danger btn-sm">Remove</a>
+                    <button class="btn btn-danger btn-sm" type="button" ng-click="selectDiaper(diaper);">Remove</button>
                 </td>
                 <td>{{diaper.model}}</td>
                 <td>{{diaper.description}}</td>
