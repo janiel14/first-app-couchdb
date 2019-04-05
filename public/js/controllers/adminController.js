@@ -98,6 +98,18 @@ angular.module('first-app-couchdb').controller('adminController', function($scop
      * init
      */
     $scope.init = function() {
+        $scope.diapers = [];
+        $scope.diaper = {
+            model: null,
+            description: null,
+            sizes: []
+        };
+        $scope.filterField = '';
+        $scope.showAlertError =  {
+            show: false,
+            message: null
+        };
+        $scope.showLoading = false;
         getAllDiapers();
     }
 

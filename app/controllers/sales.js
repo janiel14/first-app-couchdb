@@ -20,9 +20,7 @@ module.exports = function(app) {
             const listSiezes = diaper.sizes;
             if (listSiezes.length > 0) {
                 listSiezes.forEach(element => {
-                    Sizes.description = element.description;
-                    Sizes.stock = element.stock
-                    Diapers.sizes.push(Sizes);
+                    Diapers.sizes.push(element);
                 });
             }
             return await app.couchdb.createOrUpdate(Diapers, Diapers.model, _colletionDiapers);
@@ -179,9 +177,15 @@ module.exports = function(app) {
                 const sales = await app.couchdb.findAllWithQuery(query, _colletionSales);
                 if (sales) {
                     let sumTime = 0;
+                    let startTime = null;
                     for (let i = 0; i < sales.docs.length; i++) {
                         const element = sales.docs[i];
-                        sumTime = parseInt(sumTime) + parseInt(element.date);
+                        if (startTime) {
+                            const diffTime = parseInt(element.date) - parseInt(startTime);
+                            sumTime = parseInt(sumTime) + parseInt(diffTime);
+                        } else {
+                            startTime = element.date;
+                        }
                     }
                     let avgtime = (parseInt(sumTime)/parseInt(sales.docs.length)).toFixed(0);
                     const diaper = await app.couchdb.find(req.params.model, _colletionDiapers);

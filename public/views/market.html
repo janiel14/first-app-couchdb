@@ -20,9 +20,12 @@
                     <h5 class="card-title">{{diaper.model}}</h5>
                     <p class="card-text">{{diaper.description}}</p>
                     <label>Size:</label>
-                    <select ng-options="size as size.description for size in diaper.sizes track by size.description" ng-model="sizeSelected">
+                    <select ng-options="size as size.description for size in diaper.sizes track by size.description" ng-model="sizeSelected" ng-change="selectSize(diaper, sizeSelected)">
                     </select>
-                    <button class="btn btn-success btn-sm">Buy</button>
+                    <label for="qtd">Qtd:</label>
+                    <input type="number" name="qtd" ng-model="diaper.qtd" id="qtd" ng-keyup="selectSize(diaper, sizeSelected)" />
+                    <button class="btn btn-success btn-sm" ng-click="buy();">Buy</button>
+                    <p>{{diaper.message}}</p>
                 </div>
             </div>
         </div>
